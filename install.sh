@@ -77,6 +77,12 @@ systemctl enable --now retroflag-safeshutdown.service
 echo "retroflag-safeshutdown.service enabled and started."
 #-----------------------------------------------------------
 
+#Explicit power-cutoff signal at the very end of shutdown-------
+wget -O /lib/systemd/system-shutdown/retroflag-poweroff-hook.sh "$SourcePath/retroflag-poweroff-hook.sh"
+chmod +x /lib/systemd/system-shutdown/retroflag-poweroff-hook.sh
+echo "system-shutdown hook installed."
+#-----------------------------------------------------------
+
 #Reboot to apply changes----------------------------
 echo "RetroFlag Pi Case installation done. Will now reboot after 3 seconds."
 sleep 3
