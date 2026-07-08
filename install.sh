@@ -78,6 +78,7 @@ echo "retroflag-safeshutdown.service enabled and started."
 #-----------------------------------------------------------
 
 #Explicit power-cutoff signal at the very end of shutdown-------
+mkdir -p /lib/systemd/system-shutdown
 wget -O /lib/systemd/system-shutdown/retroflag-poweroff-hook.sh "$SourcePath/retroflag-poweroff-hook.sh"
 chmod +x /lib/systemd/system-shutdown/retroflag-poweroff-hook.sh
 echo "system-shutdown hook installed."
