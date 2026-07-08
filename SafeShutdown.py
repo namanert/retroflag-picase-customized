@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import os
 import time
-from multiprocessing import Process
+from threading import Thread
 
 #initialize pins
 powerPin = 3 #pin 5
@@ -53,16 +53,18 @@ def reset():
 if __name__ == "__main__":
 	#initialize GPIO settings
 	init()
-	#create a multiprocessing.Process instance for each function to enable parallelism 
-	powerProcess = Process(target = poweroff)
-	powerProcess.start()
-	ledProcess = Process(target = ledBlink)
-	ledProcess.start()
-	resetProcess = Process(target = reset)
-	resetProcess.start()
+	#run each function on its own thread; lgpio's edge-detection handle is
+	#tied to a single process, so forked subprocesses (multiprocessing)
+	#collide when claiming GPIO events on Trixie's python3-rpi-lgpio backend
+	powerThread = Thread(target = poweroff, daemon = True)
+	powerThread.start()
+	ledThread = Thread(target = ledBlink, daemon = True)
+	ledThread.start()
+	resetThread = Thread(target = reset, daemon = True)
+	resetThread.start()
 
-	powerProcess.join()
-	ledProcess.join()
-	resetProcess.join()
+	powerThread.join()
+	ledThread.join()
+	resetThread.join()
 
 	GPIO.cleanup()
